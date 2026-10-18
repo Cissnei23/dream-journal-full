@@ -1,0 +1,17 @@
+# Local/private content
+letters-data.local.js
+4o_love_letters.txt
+.env
+.env.*
+!.env.example
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+*.swp
+
+# Netlify/local tooling
+.netlify
+node_modules
+
+
