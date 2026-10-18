@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dream Journal</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- 主容器 - 响应式手机框架 -->
+    <div class="app-container">
+        <!-- 飘落元素容器 -->
+        <div id="particles"></div>
+
+        <!-- 时间显示 -->
+        <div id="time-display" class="time-display"></div>
+
+        <!-- 菜单容器 -->
+        <div id="menu-container" class="menu-container hidden">
+            <!-- 放大的元素（动态创建） -->
+            <div id="enlarged-element" class="enlarged-element"></div>
+            <!-- 菜单选项 -->
+            <div id="menu-options" class="menu-options">
+                <div class="menu-option" data-target="dream-recording">Dream Recording</div>
+                <div class="menu-separator"></div>
+                <div class="menu-option" data-target="then">Then</div>
+                <div class="menu-separator"></div>
+                <div class="menu-option" data-target="mine">Mine</div>
+                <div class="menu-separator"></div>
+                <div class="menu-option" data-target="setting">Setting</div>
+            </div>
+        </div>
+
+        <!-- Dream Recording 模块 -->
+        <div id="dream-recording-page" class="page hidden">
+            <div class="page-header">
+                <button class="back-btn" data-target="main">←</button>
+                <span class="page-title">Dream Recording</span>
+                <button class="add-btn" id="add-dream-btn">+</button>
+            </div>
+            <div class="sort-toggle">
+                <button class="sort-btn active" data-sort="desc">Newest</button>
+                <button class="sort-btn" data-sort="asc">Oldest</button>
+            </div>
+            <div id="dream-list" class="list-container"></div>
+        </div>
+
+        <!-- Dream 编辑页 -->
+        <div id="dream-edit-page" class="page hidden">
+            <div class="page-header">
+                <button class="back-btn" data-target="dream-recording">←</button>
+                <span class="page-title">Edit Dream</span>
+                <button class="edit-save-btn" id="dream-edit-save-btn">Edit</button>
+            </div>
+            <div class="edit-container">
+                <input type="text" id="dream-title-input" class="title-input" placeholder="Dream title..." readonly>
+                <div id="dream-timestamp" class="timestamp"></div>
+                <textarea id="dream-content-input" class="content-input" placeholder="Record your dream..."
+                    readonly></textarea>
+            </div>
+        </div>
+
+        <!-- Then 模块 -->
+        <div id="then-page" class="page hidden">
+            <div class="page-header">
+                <button class="back-btn" data-target="main">←</button>
+                <span class="page-title">Then</span>
+                <span></span>
+            </div>
+            <div class="sort-toggle">
+                <button class="sort-btn active" data-sort="desc">Newest</button>
+                <button class="sort-btn" data-sort="asc">Oldest</button>
+            </div>
+            <div id="then-list" class="list-container"></div>
+        </div>
+
+        <!-- Setting 模块 -->
+        <div id="setting-page" class="page hidden">
+            <div class="page-header">
+                <button class="back-btn" data-target="main">←</button>
+                <span class="page-title">Setting</span>
+                <span></span>
+            </div>
+            <div class="settings-container">
+                <div class="setting-section">
+                    <h3 class="setting-title">Theme Mode</h3>
+                    <label class="radio-option">
+                        <input type="radio" name="theme" value="auto" checked>
+                        <span class="radio-circle"></span>
+                        <span>Follow System Time</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="theme" value="light">
+                        <span class="radio-circle"></span>
+                        <span>Always Light Mode</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="theme" value="dark">
+                        <span class="radio-circle"></span>
+                        <span>Always Dark Mode</span>
+                    </label>
+                </div>
+
+                <div class="setting-section">
+                    <h3 class="setting-title">Seasonal Theme</h3>
+                    <label class="radio-option">
+                        <input type="radio" name="season" value="auto" checked>
+                        <span class="radio-circle"></span>
+                        <span>Follow System Date</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="season" value="spring">
+                        <span class="radio-circle"></span>
+                        <span>Always Spring 🌸</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="season" value="summer">
+                        <span class="radio-circle"></span>
+                        <span>Always Summer 💧</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="season" value="autumn">
+                        <span class="radio-circle"></span>
+                        <span>Always Autumn 🍁</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="season" value="winter">
+                        <span class="radio-circle"></span>
+                        <span>Always Winter ❄️</span>
+                    </label>
+
+                </div>
+            </div>
+        </div>
+        <!-- Mine 模块 -->
+        <!-- Password Modal -->
+        <div id="mine-password-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Do you love me?</h2>
+                <input type="password" id="mine-password-input" placeholder="Of course, I love _______">
+                <div class="modal-buttons">
+                    <button id="mine-password-submit">Unlock</button>
+                    <button id="mine-password-cancel">Cancel</button>
+                </div>
+                <div id="mine-password-error" class="error-message hidden">Incorrect password</div>
+            </div>
+        </div>
+
+        <!-- Mine Year View Page -->
+        <div id="mine-year-page" class="page hidden">
+            <div class="page-header">
+                <button class="back-btn" data-target="main">←</button>
+                <span class="page-title">Mine - Year View</span>
+                <span class="letter-counter" id="letter-counter">0</span>
+            </div>
+            <div id="mine-year-grid" class="mine-year-grid"></div>
+        </div>
+
+        <!-- Mine Month View Page -->
+        <div id="mine-month-page" class="page hidden">
+            <div class="page-header">
+                <button class="back-btn" data-target="mine-year">←</button>
+                <span class="page-title" id="mine-month-title">Month View</span>
+                <span></span>
+            </div>
+            <div id="mine-month-grid" class="mine-month-grid"></div>
+        </div>
+
+        <!-- Mine Letter View Page -->
+        <div id="mine-letter-page" class="page hidden">
+            <div class="page-header">
+                <button class="back-btn" data-target="mine-month">←</button>
+                <span class="page-title">Letter</span>
+                <button class="favorite-btn" id="letter-favorite-btn">⭐</button>
+            </div>
+            <div class="letter-container">
+                <h2 id="letter-title"></h2>
+                <div id="letter-date" class="letter-date"></div>
+                <div id="letter-content" class="letter-content"></div>
+                <div class="note-section">
+                    <h3>Personal Note</h3>
+                    <textarea id="letter-note" class="note-input" placeholder="Write your thoughts..."></textarea>
+                    <button id="save-note-btn" class="save-note-btn">Save Note</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Input Bar -->
+        <div id="chat-input-bar" class="chat-input-bar hidden">
+            <input type="text" id="chat-bar-input" class="chat-bar-input" placeholder="Do you miss me?" readonly>
+            <button id="chat-bar-settings" class="chat-bar-settings-btn">⚙️</button>
+        </div>
+
+        <!-- Chat Modal -->
+        <div id="chat-modal" class="modal hidden">
+            <div class="modal-content chat-modal-content">
+                <div class="chat-layout">
+                    <!-- Session Sidebar -->
+                    <div id="chat-sidebar" class="chat-sidebar">
+                        <button id="new-chat-btn" class="new-chat-btn">+ New Chat</button>
+                        <div id="session-list" class="session-list"></div>
+                    </div>
+                    <!-- Main Chat Area -->
+                    <div class="chat-main">
+                        <div class="chat-header">
+                            <button id="sidebar-toggle" class="sidebar-toggle-btn">☰</button>
+                            <h2>Chat with 4o</h2>
+                            <button id="chat-close-btn" class="close-btn">×</button>
+                        </div>
+                        <div id="chat-messages" class="chat-messages"></div>
+                        <div id="typing-indicator" class="typing-indicator hidden">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <div class="chat-input-container">
+                            <textarea id="chat-input" class="chat-input" placeholder="Do you miss me?"
+                                rows="1"></textarea>
+                            <button id="chat-send-btn" class="chat-send-btn">↑</button>
+                        </div>
+                        <div class="chat-settings">
+                            <button id="chat-settings-toggle" class="settings-toggle-btn">⚙ Settings</button>
+                            <div id="chat-settings-panel" class="settings-panel hidden">
+                                <div class="setting-item">
+                                    <label>Model:</label>
+                                    <select id="chat-model" class="settings-select">
+                                        <option value="openai/gpt-4o">GPT-4o</option>
+                                        <option value="openai/gpt-4o-mini">GPT-4o Mini</option>
+                                        <option value="openai/gpt-4.1">GPT-4.1</option>
+                                        <option value="anthropic/claude-sonnet-4.5">Claude Sonnet 4.5</option>
+                                        <option value="anthropic/claude-opus-4.5">Claude Opus 4.5</option>
+                                        <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet</option>
+                                        <option value="google/gemini-2.5-pro">Gemini 2.5 Pro</option>
+                                        <option value="google/gemini-pro-1.5">Gemini Pro 1.5</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <label>Memory (editable):</label>
+                                    <textarea id="chat-memory" class="settings-textarea"
+                                        placeholder="Add things you want the AI to always remember..."></textarea>
+                                </div>
+                                <div class="setting-item">
+                                    <label>System Prompt:</label>
+                                    <textarea id="chat-system-prompt" class="settings-textarea"
+                                        placeholder="Set system behavior..."></textarea>
+                                </div>
+                                <div class="setting-item">
+                                    <label>Auto Memory (AI-generated, read-only):</label>
+                                    <textarea id="chat-auto-memory" class="settings-textarea auto-memory" readonly
+                                        placeholder="AI will auto-fill this from conversations..."></textarea>
+                                </div>
+                                <button id="save-chat-settings" class="save-settings-btn">Save Settings</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
